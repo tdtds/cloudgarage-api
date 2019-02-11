@@ -1,8 +1,6 @@
-# Cloudgarage::Api
+# Ruby Binding of CloudGarage Public API
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cloudgarage/api`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A Ruby Binding of [CloudGarage Public API](https://api.cloudgarage.jp/doc/index.html).
 
 ## Installation
 
@@ -22,13 +20,89 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Beginning, get your API keys ('Client ID' and 'Client Secret') from the console of CloudGarage.
 
-## Development
+### Create client instance:
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```ruby
+require 'cloudgarage-api'
+client = CloudGarage.new(client_id, client_secret)
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+If you receive some exceptions of `RestClient`, see error messages by `$!.response.body`.
+
+### Contract APIs
+
+```ruby
+client.contracts()
+#=> list of contracts
+
+client.contracts(contract_id)
+#=> infomation of a contract
+```
+
+### Image APIs
+
+```ruby
+client.images
+#=> list of all images
+
+client.images(:os) # :os, :application or :private
+#=> list of OS type images
+```
+
+### Keypair APIs
+
+```ruby
+cient.keypairs
+#=> list of all key pairs
+
+client.keypairs(keypair_id)
+#=> information of the key pair
+```
+
+### Server APIs
+
+```ruby
+client.servers
+#=> list of all your servers
+
+client.server_info(server_id)
+#=> information of a server instance specified by UUID
+
+client.server_auto_backup_info(server_id) # not works well
+#=> information of a server auto backup specified by UUID
+
+client.server_security_info(server_id) # not works well
+#=> information of a server security specified by UUID
+
+# create a server
+client.create_server(name, root_passwd)
+#=> information of new server 
+# more keyword params:
+#     contract_id: String
+#     spec:        Hash
+#     ports:       Array
+#     image_id:    String
+#     keyname:     String
+#     comment:     String
+
+# start / restart / restart hard / stop servers
+client.start_servers(server_ids)
+client.restart_servers(server_ids)
+client.restart_hard_servers(server_ids)
+client.stop_servers(server_ids)
+
+# delete a server, notifyed by e-mail
+client.delete_server(server_id, notify = true) # not works well
+```
+
+### Project API
+
+```ruby
+client.version
+#=> version of the API
+```
 
 ## Contributing
 
