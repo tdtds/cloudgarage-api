@@ -46,12 +46,12 @@ class CloudGarage
     end
   end
 
-  def servers(server_id = nil)
-    if server_id
-      get("servers/#{server_id}")['server_detail']
-    else
-      get('servers')['servers']
-    end
+  def servers()
+    get('servers')['servers']
+  end
+
+  def server_info(server_id)
+    get("servers/#{server_id}")['server_detail']
   end
 
   def create_server(name, password, contract_id: nil, spec: {}, ports: [], image_id: nil, keyname: nil, comment: nil)
