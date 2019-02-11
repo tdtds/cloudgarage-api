@@ -54,6 +54,17 @@ class CloudGarage
     end
   end
 
+  # operation: :start, :restart, :restart_hard, :stop
+  # servers: array of server UUIDs
+  def operate_servers(operation, servers)
+    payload = {'operate' => operation.to_s.upcase, 'servers' => [servers].flatten}
+    post('servers/operate', payload)
+  end
+  def start_servers(servers); operate_servers(:start, servers); end
+  def restart_servers(servers); operate_servers(:restart, servers); end
+  def restart_hard_servers(servers); operate_servers(:restart_hard, servers); end
+  def stop_servers(servers); operate_servers(:stop, servers); end
+
   def create_server(name, password, contract_id: nil, spec: {}, ports: [], image_id: nil, keyname: nil, comment: nil)
     payload = {'name' => name, 'password' => password}
     payload['contract_id'] = contract_id if contract_id
