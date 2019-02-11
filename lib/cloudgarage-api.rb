@@ -55,7 +55,11 @@ class CloudGarage
   end
 
   def server_auto_backup_info(server_id)
-    get("servers/#{server_id}/autoBackup")['server_detail']
+    get("servers/#{server_id}/autoBackup")['autoBackup']
+  end
+
+  def server_security_info(server_id)
+    get("servers/#{server_id}/security")['securityRules']
   end
 
   def create_server(name, password, contract_id: nil, spec: {}, ports: [], image_id: nil, keyname: nil, comment: nil)
