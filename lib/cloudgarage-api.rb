@@ -54,6 +54,17 @@ class CloudGarage
     end
   end
 
+  def create_server(name, password, contract_id: nil, spec: {}, ports: [], image_id: nil, keyname: nil, comment: nil)
+    payload = {'name' => name, 'password' => password}
+    payload['contract_id'] = contract_id if contract_id
+    payload['spec'] = spec unless spec.empty?
+    payload['ports'] = ports unless ports.empty?
+    payload['image_id'] = image_id if image_id
+    payload['keyname'] = keyname if keyname
+    payload['comment'] = comment if comment
+    post('servers', payload)['resource_id']
+  end
+
   # operation: :start, :restart, :restart_hard, :stop
   # servers: array of server UUIDs
   def operate_servers(operation, servers)
@@ -67,17 +78,6 @@ class CloudGarage
 
   def delete_server(resource_id, notify = true)
     delete("servers/#{resource_id}?sendMail=#{notify ? 'true': 'false'}")
-  end
-
-  def create_server(name, password, contract_id: nil, spec: {}, ports: [], image_id: nil, keyname: nil, comment: nil)
-    payload = {'name' => name, 'password' => password}
-    payload['contract_id'] = contract_id if contract_id
-    payload['spec'] = spec unless spec.empty?
-    payload['ports'] = ports unless ports.empty?
-    payload['image_id'] = image_id if image_id
-    payload['keyname'] = keyname if keyname
-    payload['comment'] = comment if comment
-    post('servers', payload)['resource_id']
   end
 
   def version
