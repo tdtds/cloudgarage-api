@@ -54,6 +54,18 @@ class CloudGarage
     end
   end
 
+  def create_server(name, password, contract_id: nil, spec: {}, ports: [], image_id: nil, keyname: nil, comment: nil)
+    payload = {'name' => name, 'password' => password}
+    payload['contract_id'] = contract_id if contract_id
+    payload['spec'] = spec unless spec.empty?
+    payload['ports'] = ports unless ports.empty?
+    payload['image_id'] = image_id if image_id
+    payload['keyname'] = keyname if keyname
+    payload['comment'] = comment if comment
+    pp payload
+    post('servers', payload)['resource_id']
+  end
+
   def version
     get("version")['version']
   end
