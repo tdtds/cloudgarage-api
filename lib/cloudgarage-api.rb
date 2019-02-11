@@ -1,14 +1,20 @@
+#
+# A ruby wrapper of CloudGarage public API
+#
+# Copyright (C) 2019 by Tada, Tadashi <t@tdtds.jp>
+# You can distribute under GPL 3.0
+#
 require 'rest-client'
 
 class CloudGarage
-  VERSION = "0.1.0"
+  VERSION = "0.1.0".freeze
 
+  class BadRequest < ArgumentError; end
   class Unauthorized < ArgumentError; end
   class NotFound < ArgumentError; end
   class Failed < ArgumentError; end
 
-  BASE_URI = 'https://api.cloudgarage.jp'
-  CONTENT_TYPE = 'application/json'
+  BASE_URI = 'https://api.cloudgarage.jp'.freeze
 
   def initialize(client_id, client_secret)
     @client_id, @client_secret = client_id, client_secret
@@ -17,18 +23,7 @@ class CloudGarage
 
   def token
     payload = {'client_id' => @client_id, 'client_secret' => @client_secret}
-    res = RestClient.post("#{BASE_URI}/tokens", payload.to_json, {'Content-Type' => CONTENT_TYPE})
-    case res.code
-    when 200
-      @token = parse_body(res)['token']['id']
-      return @token
-    when 401
-      raise Unauthorized.new
-    when 404
-      raise NotFound.new
-    when 400
-      raise Failed.new
-    end
+    @token = post('tokens', payload)['token']['id']
   end
 
   def contracts(contract_id = nil)
@@ -39,12 +34,14 @@ class CloudGarage
     end
   end
 
+  # image_type: :os, :application, :private
   def images(image_type = nil)
+    images = get("images")['images']
     if image_type
-      get("images?imageType=#{image_type}")['images']
-    else
-      get("images")['images']
+      image_type = image_type.to_s.upcase
+      images.select!{|i| i['image_type'] == image_type}
     end
+    return images
   end
 
   def keypairs(keypair_id = nil)
@@ -68,33 +65,18 @@ class CloudGarage
   end
 
 private
+  def header
+    h = {'Content-Type' => 'application/json'}
+    h['X-Auth-Token'] = @token if @token
+    return h
+  end
+
   def get(api)
-    res = RestClient.get("#{BASE_URI}/#{api}", {'Content-Type' => CONTENT_TYPE, 'X-Auth-Token' => @token})
-    case res.code
-    when 200
-      return parse_body(res)
-    when 401
-      raise Unauthorized.new
-    when 404
-      raise NotFound.new
-    when 400
-      raise Failed.new
-    end
+    parse_body(RestClient.get("#{BASE_URI}/#{api}", header))
   end
 
   def post(api, payload)
-    res = RestClient.post("#{BASE_URI}/#{api}", payload.to_json, {'Content-Type' => CONTENT_TYPE, 'X-Auth-Token' => @token})
-    case res.code
-    when 200
-      @token = parse_body(res).token
-      return @token
-    when 401
-      raise Unauthorized.new
-    when 404
-      raise NotFound.new
-    when 400
-      raise Failed.new
-    end
+    parse_body(RestClient.post("#{BASE_URI}/#{api}", payload.to_json, header))
   end
 
   def parse_body(res)
