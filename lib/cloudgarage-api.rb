@@ -65,6 +65,10 @@ class CloudGarage
   def restart_hard_servers(servers); operate_servers(:restart_hard, servers); end
   def stop_servers(servers); operate_servers(:stop, servers); end
 
+  def delete_server(resource_id, notify = true)
+    delete("servers/#{resource_id}?sendMail=#{notify ? 'true': 'false'}")
+  end
+
   def create_server(name, password, contract_id: nil, spec: {}, ports: [], image_id: nil, keyname: nil, comment: nil)
     payload = {'name' => name, 'password' => password}
     payload['contract_id'] = contract_id if contract_id
@@ -93,6 +97,10 @@ private
 
   def post(api, payload)
     parse_body(RestClient.post("#{BASE_URI}/#{api}", payload.to_json, header))
+  end
+
+  def delete(api)
+    RestClient.delete("#{BASE_URI}/#{api}", header)
   end
 
   def parse_body(res)
