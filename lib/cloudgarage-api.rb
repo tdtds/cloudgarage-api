@@ -62,7 +62,6 @@ class CloudGarage
     payload['image_id'] = image_id if image_id
     payload['keyname'] = keyname if keyname
     payload['comment'] = comment if comment
-    pp payload
     post('servers', payload)['resource_id']
   end
 
