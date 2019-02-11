@@ -8,12 +8,6 @@ require 'rest-client'
 
 class CloudGarage
   VERSION = "0.1.0".freeze
-
-  class BadRequest < ArgumentError; end
-  class Unauthorized < ArgumentError; end
-  class NotFound < ArgumentError; end
-  class Failed < ArgumentError; end
-
   BASE_URI = 'https://api.cloudgarage.jp'.freeze
 
   def initialize(client_id, client_secret)
