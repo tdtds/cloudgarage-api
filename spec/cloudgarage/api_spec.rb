@@ -1,9 +1,5 @@
-RSpec.describe Cloudgarage::Api do
+RSpec.describe CloudGarage do
   it "has a version number" do
-    expect(Cloudgarage::Api::VERSION).not_to be nil
-  end
-
-  it "does something useful" do
-    expect(false).to eq(true)
+    expect(CloudGarage::VERSION).not_to be nil
   end
 end
