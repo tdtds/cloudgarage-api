@@ -54,6 +54,10 @@ class CloudGarage
     get("servers/#{server_id}")['server_detail']
   end
 
+  def server_auto_backup_info(server_id)
+    get("servers/#{server_id}/autoBackup")['server_detail']
+  end
+
   def create_server(name, password, contract_id: nil, spec: {}, ports: [], image_id: nil, keyname: nil, comment: nil)
     payload = {'name' => name, 'password' => password}
     payload['contract_id'] = contract_id if contract_id
