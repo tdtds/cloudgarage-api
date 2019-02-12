@@ -16,49 +16,49 @@ class CloudGarage
 
   def token
     payload = {'client_id' => @client_id, 'client_secret' => @client_secret}
-    @token = post('tokens', payload)['token']['id']
+    @token = post('tokens', payload)[:token][:id]
   end
 
   def contracts(contract_id = nil)
     if contract_id 
-      get("contracts/#{contract_id}")['contract']
+      get("contracts/#{contract_id}")[:contract]
     else
-      get('contracts')['contracts']
+      get('contracts')[:contracts]
     end
   end
 
   # image_type: :os, :application, :private
   def images(image_type = nil)
-    images = get("images")['images']
+    images = get("images")[:images]
     if image_type
       image_type = image_type.to_s.upcase
-      images.select!{|i| i['image_type'] == image_type}
+      images.select!{|i| i[:image_type] == image_type}
     end
     return images
   end
 
   def keypairs(keypair_id = nil)
     if keypair_id
-      get("keypairs/#{keypair_id}")['keypair']
+      get("keypairs/#{keypair_id}")[:keypair]
     else
-      get('keypairs')['keypairs']
+      get('keypairs')[:keypairs]
     end
   end
 
   def servers()
-    get('servers')['servers']
+    get('servers')[:servers]
   end
 
   def server_info(server_id)
-    get("servers/#{server_id}")['server_detail']
+    get("servers/#{server_id}")[:server_detail]
   end
 
   def server_auto_backup_info(server_id)
-    get("servers/#{server_id}/autoBackup")['autoBackup']
+    get("servers/#{server_id}/autoBackup")[:autoBackup]
   end
 
   def server_security_info(server_id)
-    get("servers/#{server_id}/security")['securityRules']
+    get("servers/#{server_id}/security")[:securityRules]
   end
 
   def create_server(name, password, contract_id: nil, spec: {}, ports: [], image_id: nil, keyname: nil, comment: nil)
@@ -69,7 +69,7 @@ class CloudGarage
     payload['image_id'] = image_id if image_id
     payload['keyname'] = keyname if keyname
     payload['comment'] = comment if comment
-    post('servers', payload)['resource_id']
+    post('servers', payload)[:resource_id]
   end
 
   # operation: :start, :restart, :restart_hard, :stop
@@ -88,7 +88,7 @@ class CloudGarage
   end
 
   def version
-    get("version")['version']
+    get("version")[:version]
   end
 
 private
@@ -132,6 +132,6 @@ end
   end
 
   def parse_body(res)
-    JSON.parse(res.body)
+    JSON.parse(res.body, symbolize_names: true)
   end
 end
