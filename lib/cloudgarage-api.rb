@@ -98,16 +98,37 @@ private
     return h
   end
 
+  def call_api
+    begin
+      yield
+    rescue RestClient::ExceptionWithResponse => ex
+      def ex.message
+        if @response
+          "#{default_message}: #{JSON.parse(response.body)['fault']['messages'].join(' ')}"
+        else
+          default_message
+        end
+      end
+      raise ex
+    end
+end
+
   def get(api)
-    parse_body(RestClient.get("#{BASE_URI}/#{api}", header))
+    call_api do
+      parse_body(RestClient.get("#{BASE_URI}/#{api}", header))
+    end
   end
 
   def post(api, payload)
-    parse_body(RestClient.post("#{BASE_URI}/#{api}", payload.to_json, header))
+    call_api do
+      parse_body(RestClient.post("#{BASE_URI}/#{api}", payload.to_json, header))
+    end
   end
 
   def delete(api)
-    RestClient.delete("#{BASE_URI}/#{api}", header)
+    call_api do
+      RestClient.delete("#{BASE_URI}/#{api}", header)
+    end
   end
 
   def parse_body(res)

@@ -29,8 +29,6 @@ require 'cloudgarage-api'
 client = CloudGarage.new(client_id, client_secret)
 ```
 
-If you receive some exceptions of `RestClient`, see error messages by `$!.response.body`.
-
 ### Contract APIs
 
 ```ruby
