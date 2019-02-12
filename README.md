@@ -68,10 +68,10 @@ client.servers
 client.server_info(server_id)
 #=> information of a server instance specified by UUID
 
-client.server_auto_backup_info(server_id) # not works well
+client.server_auto_backup_info(server_id)
 #=> information of a server auto backup specified by UUID
 
-client.server_security_info(server_id) # not works well
+client.server_security_info(server_id)
 #=> information of a server security specified by UUID
 
 # create a server
