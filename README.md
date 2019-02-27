@@ -1,6 +1,6 @@
-# Ruby Binding of CloudGarage Public API
+# Ruby Binding and CLI of CloudGarage Public API
 
-A Ruby Binding of [CloudGarage Public API](https://api.cloudgarage.jp/doc/index.html).
+A Ruby Binding and CLI of [CloudGarage Public API](https://api.cloudgarage.jp/doc/index.html).
 
 ## Installation
 
@@ -18,15 +18,15 @@ Or install it yourself as:
 
     $ gem install cloudgarage-api
 
-## Usage
+## Usage of API
 
 Beginning, get your API keys ('Client ID' and 'Client Secret') from the console of CloudGarage.
 
 ### Create client instance:
 
 ```ruby
-require 'cloudgarage-api'
-client = CloudGarage.new(client_id, client_secret)
+require 'cloudgarage/api'
+client = CloudGarage::API.new(client_id, client_secret)
 ```
 
 ### Contract APIs
