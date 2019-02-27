@@ -10,13 +10,14 @@ module CloudGarage
   class API
     BASE_URI = 'https://api.cloudgarage.jp'.freeze
 
-    def initialize(client_id, client_secret)
-      @client_id, @client_secret = client_id, client_secret
-      token
+    attr_accessor :token
+
+    def initialize(token = nil)
+      @token = token
     end
 
-    def token
-      payload = {'client_id' => @client_id, 'client_secret' => @client_secret}
+    def login(client_id, client_secret)
+      payload = {'client_id' => client_id, 'client_secret' => client_secret}
       @token = post('tokens', payload)[:token][:id]
     end
 

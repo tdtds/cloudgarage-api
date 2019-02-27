@@ -22,12 +22,15 @@ Or install it yourself as:
 
 Beginning, get your API keys ('Client ID' and 'Client Secret') from the console of CloudGarage.
 
-### Create client instance:
+### Create client instance and login:
 
 ```ruby
 require 'cloudgarage/api'
-client = CloudGarage::API.new(client_id, client_secret)
+client = CloudGarage::API.new
+token = client.login(client_id, client_secret)
 ```
+
+You can use `token` while 24H. If the token expired, do login again.
 
 ### Contract APIs
 
