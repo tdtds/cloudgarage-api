@@ -5,6 +5,7 @@
 # You can distribute under GPL 3.0
 #
 require 'rest-client'
+require 'json'
 
 module CloudGarage
   class API
