@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "cloudgarage-api"
+require "cloudgarage/api"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
