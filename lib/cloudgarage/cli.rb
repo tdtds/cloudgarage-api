@@ -8,28 +8,27 @@ module CloudGarage
 
     desc 'login <id> <secret>', 'login to CloudGarage Service and get a token'
     def login(client_id, client_secret)
-      client = API.new
-      token = client.login(client_id, client_secret)
-      save_token(token)
+      @token = API.new.login(client_id, client_secret)
+      save_token(@token)
     end
 
     desc 'contracts [contract_id]', 'get contracts information'
     def contracts(contract_id = nil)
-      call_api(client) do |c|
+      call_api do |c|
         c.contracts(contract_id)
       end
     end
 
     desc 'images [os|application|private]', 'get images'
     def images(image_type = nil)
-      call_api(client) do |c|
+      call_api do |c|
         c.images(image_type)
       end
     end
 
     desc 'keypairs [keypair_id]', 'get SSH Key pairs'
     def keypairs(keypair_id = nil)
-      call_api(client) do |c|
+      call_api do |c|
         c.keypairs(keypair_id)
       end
     end
@@ -38,7 +37,7 @@ module CloudGarage
     option :backup, default: false, type: :boolean
     option :security, default: false, type: :boolean
     def servers(server_id = nil)
-      call_api(client) do |c|
+      call_api do |c|
         if server_id
           if options[:backup]
             c.server_auto_backup_info(server_id)
@@ -61,7 +60,7 @@ module CloudGarage
     option :keyname, default: nil, type: :string
     option :comment, default: nil, type: :string
     def create(name, password)
-      call_api(client) do |c|
+      call_api do |c|
         c.create_server(name, password,
           contract_id: options[:contract_id],
           image_id: options[:image_id],
@@ -75,14 +74,14 @@ module CloudGarage
 
     desc 'start <server_id>', 'start server'
     def start(server_id)
-      call_api(client) do |c|
+      call_api do |c|
         c.start_servers(server_id)
       end
     end
 
     desc 'stop <server_id>', 'stop server'
     def stop(server_id)
-      call_api(client) do |c|
+      call_api do |c|
         c.stop_servers(server_id)
       end
     end
@@ -90,7 +89,7 @@ module CloudGarage
     desc 'restart [--hard] <server_id>', 'restart server'
     option :hard, default: false, type: :boolean
     def restart(server_id)
-      call_api(client) do |c|
+      call_api do |c|
         if options[:hard]
           c.restart_hard_servers(server_id)
         else
@@ -102,8 +101,9 @@ module CloudGarage
     desc 'delete [--notify] <server_id>', 'delete server'
     option :notify, default: true, type: :boolean
     def delete(server_id)
-      call_api(client) do |c|
+      call_api do |c|
         c.delete_server(server_id, options[:notify])
+        return nil
       end
     end
 
@@ -118,26 +118,43 @@ module CloudGarage
     end
 
     def client
-      token = load_token
-      unless token
-        puts 'please login to CloudGarage API'
-        print 'client id: '
-        client_id = gets.chomp
-        print 'client secret: '
-        client_secret = gets.chomp
-        token = login(client_id, client_secret)
-      end
-      API.new(token)
+      @token = load_token unless @token
+      API.new(@token)
     end
 
-    def call_api(client)
+    def refresh_token
+      if $stdin.tty? && $stdout.tty?
+        begin
+          puts 'Access tokens expired, enter your Client ID and Secret.'
+          print 'Client ID: '
+          client_id = $stdin.gets.chomp
+          print 'Client Secret: '
+          client_secret = $stdin.gets.chomp
+          login(client_id, client_secret)
+        rescue Interrupt
+          exit 255
+        rescue
+          $stderr.puts "Could not login. try again."
+          exit 255
+          end
+      else
+        $stderr.puts "Access tokens expired. try login again."
+        exit 255
+      end
+    end
+
+    def call_api
       begin
         result = yield(client)
         if options[:json]
-          puts result.to_json
+          puts result.to_json if result
         else
-          pp result
+          pp result if result
         end
+        exit 0
+      rescue RestClient::Unauthorized => e
+        refresh_token
+        retry
       rescue => e
         $stderr.puts e.message
         exit 255
