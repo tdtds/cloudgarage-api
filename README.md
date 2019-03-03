@@ -120,7 +120,7 @@ client.restart_hard_servers(server_ids)
 client.stop_servers(server_ids)
 
 # delete a server, notifyed by e-mail
-client.delete_server(server_id, notify = true) # not works well
+client.delete_server(server_id, notify = true)
 ```
 
 ### Project API
