@@ -1,7 +1,7 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "cloudgarage-api/version"
+require "cloudgarage/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "cloudgarage-api"
@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Tada, Tadashi"]
   spec.email         = ["t@tdtds.jp"]
 
-  spec.summary       = %q{CloudGarage API}
-  spec.description   = %q{Control CloudGarage VPS by it's public API}
+  spec.summary       = %q{CloudGarage API and CLI}
+  spec.description   = %q{Ruby Binding and CLI of CloudGarage Public API}
   spec.homepage      = "https://github.com/tdtds/cloudgarage-api"
 
   # Specify which files should be added to the gem when it is released.
@@ -23,7 +23,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "rest-client", "~> 2.0"
-
+  spec.add_dependency "thor", "~> 0.20"
+  spec.add_dependency "pit"
+  
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"

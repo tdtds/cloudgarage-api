@@ -1,6 +1,6 @@
-# Ruby Binding of CloudGarage Public API
+# Ruby Binding and CLI of CloudGarage Public API
 
-A Ruby Binding of [CloudGarage Public API](https://api.cloudgarage.jp/doc/index.html).
+A Ruby Binding Library and CLI of [CloudGarage Public API](https://api.cloudgarage.jp/doc/index.html).
 
 ## Installation
 
@@ -14,20 +14,48 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+Or install it yourself to use CLI as:
 
     $ gem install cloudgarage-api
 
-## Usage
+## Usage of CLI (cloudgarage command)
 
 Beginning, get your API keys ('Client ID' and 'Client Secret') from the console of CloudGarage.
 
-### Create client instance:
+```sh
+$ cloudgarage help
+Commands:
+  cloudgarage contracts [contract_id]             # get contracts information
+  cloudgarage create <name> <password> [opts...]  # create a server
+  cloudgarage delete [--notify] <server_id>       # delete server
+  cloudgarage help [COMMAND]                      # Describe available commands or one specific command
+  cloudgarage images [os|application|private]     # get images
+  cloudgarage keypairs [keypair_id]               # get SSH Key pairs
+  cloudgarage login <id> <secret>                 # login to CloudGarage Service and get a token
+  cloudgarage restart [--hard] <server_id>        # restart server
+  cloudgarage serves [server_id]                  # get servers information
+  cloudgarage start <server_id>                   # start server
+  cloudgarage stop <server_id>                    # stop server
+
+Options:
+  [--json], [--no-json]
+```
+
+You can get result by JSON using `--json` option for searching or querying (ex. `jq`)
+
+## Usage of API from ruby language
+
+Beginning, get your API keys ('Client ID' and 'Client Secret') from the console of CloudGarage.
+
+### Create client instance and login:
 
 ```ruby
-require 'cloudgarage-api'
-client = CloudGarage.new(client_id, client_secret)
+require 'cloudgarage/api'
+client = CloudGarage::API.new
+token = client.login(client_id, client_secret)
 ```
+
+You can use the `token` while 24H. If the token expired, try to login again.
 
 ### Contract APIs
 

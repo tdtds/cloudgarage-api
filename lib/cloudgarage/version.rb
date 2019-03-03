@@ -1,3 +1,3 @@
-class CloudGarage
+module CloudGarage
   VERSION = "0.1.2".freeze
 end
