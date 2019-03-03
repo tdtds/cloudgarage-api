@@ -55,8 +55,8 @@ module CloudGarage
 
     desc 'create <name> <password> [opts...]', 'create a server'
     option :contract_id, default: nil, type: :string
-    option :spec, default: '', type: :string
-    option :ports, default: '', type: :string
+    option :spec, default: '{}', type: :string
+    option :ports, default: '[]', type: :string
     option :image_id, default: nil, type: :string
     option :keyname, default: nil, type: :string
     option :comment, default: nil, type: :string
