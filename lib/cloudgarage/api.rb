@@ -88,6 +88,7 @@ module CloudGarage
 
     def delete_server(resource_id, notify = true)
       delete("servers/#{resource_id}?sendMail=#{notify ? 'true': 'false'}")
+      return true
     end
 
     def version
